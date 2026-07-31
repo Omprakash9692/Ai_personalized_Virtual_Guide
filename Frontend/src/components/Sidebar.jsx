@@ -161,18 +161,8 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             {profile && <ShieldCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />}
           </div>
 
-          {/* Theme & Language Selectors */}
+          {/* Language Selector */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between bg-slate-50 dark:bg-slate-900/50 p-1.5 rounded-xl border border-slate-200 dark:border-slate-800">
-              <button
-                onClick={toggleTheme}
-                className="flex flex-1 items-center justify-center space-x-2 py-1.5 rounded-lg hover:bg-slate-200/50 dark:hover:bg-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 transition-colors"
-              >
-                {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-indigo-500" />}
-                <span>{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
-              </button>
-            </div>
-
             <div className="grid grid-cols-3 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
               {[
                 { code: 'en', label: 'English' },
