@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { checkHealth, getUserProfile as apiGetUserProfile, saveUserProfile as apiSaveUserProfile } from '../services/api';
+import { checkHealth, getUserProfile as apiGetUserProfile, saveUserProfile as apiSaveUserProfile, loginUser, registerUser } from '../services/api';
 
 const UserContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const [userId, setUserId] = useState(() => localStorage.getItem('vg_userId') || 'student_demo');
+  const [authToken, setAuthToken] = useState(() => localStorage.getItem('vg_token') || null);
+  const [userId, setUserId] = useState(() => localStorage.getItem('vg_userId') || null);
   const [language, setLanguageState] = useState(() => localStorage.getItem('vg_language') || 'en');
   const [profile, setProfile] = useState(null);
+  
   const [isHealthOk, setIsHealthOk] = useState(false);
   const [loadingProfile, setLoadingProfile] = useState(false);
   const [toastMessage, setToastMessage] = useState(null);
+  
+  const isAuthenticated = !!authToken;
 
   const showToast = (message, type = 'info') => {
     setToastMessage({ message, type, id: Date.now() });
@@ -21,13 +25,6 @@ export const UserProvider = ({ children }) => {
   const setLanguage = (lang) => {
     setLanguageState(lang);
     localStorage.setItem('vg_language', lang);
-  };
-
-  const setUserIdAndSave = (id) => {
-    if (!id || id.trim() === '') return;
-    const cleanId = id.trim();
-    setUserId(cleanId);
-    localStorage.setItem('vg_userId', cleanId);
   };
 
   // Check Backend health on load
@@ -45,9 +42,13 @@ export const UserProvider = ({ children }) => {
     return () => clearInterval(interval);
   }, []);
 
-  // Fetch user profile whenever userId changes
+  // Fetch user profile whenever userId changes and we are authenticated
   useEffect(() => {
-    if (!userId) return;
+    if (!userId || !isAuthenticated) {
+      setProfile(null);
+      return;
+    }
+    
     const loadProfile = async () => {
       setLoadingProfile(true);
       try {
@@ -72,7 +73,7 @@ export const UserProvider = ({ children }) => {
       }
     };
     loadProfile();
-  }, [userId]);
+  }, [userId, isAuthenticated]);
 
   const saveProfile = async (profileData) => {
     setLoadingProfile(true);
@@ -93,11 +94,55 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const login = async (email, password) => {
+    try {
+      const res = await loginUser({ email, password });
+      if (res.success) {
+        setAuthToken(res.token);
+        setUserId(res.user.userId);
+        localStorage.setItem('vg_token', res.token);
+        localStorage.setItem('vg_userId', res.user.userId);
+        showToast('Logged in successfully', 'success');
+        return true;
+      }
+      throw new Error(res.error || 'Login failed');
+    } catch (err) {
+      showToast(err?.response?.data?.error || err.message || 'Error logging in', 'error');
+      return false;
+    }
+  };
+
+  const register = async (name, email, password) => {
+    try {
+      const res = await registerUser({ name, email, password });
+      if (res.success) {
+        setAuthToken(res.token);
+        setUserId(res.user.userId);
+        localStorage.setItem('vg_token', res.token);
+        localStorage.setItem('vg_userId', res.user.userId);
+        showToast('Registered successfully', 'success');
+        return true;
+      }
+      throw new Error(res.error || 'Registration failed');
+    } catch (err) {
+      showToast(err?.response?.data?.error || err.message || 'Error registering', 'error');
+      return false;
+    }
+  };
+
+  const logout = () => {
+    setAuthToken(null);
+    setUserId(null);
+    setProfile(null);
+    localStorage.removeItem('vg_token');
+    localStorage.removeItem('vg_userId');
+    showToast('Logged out successfully', 'info');
+  };
+
   return (
     <UserContext.Provider
       value={{
         userId,
-        setUserId: setUserIdAndSave,
         language,
         setLanguage,
         profile,
@@ -106,6 +151,10 @@ export const UserProvider = ({ children }) => {
         isHealthOk,
         toastMessage,
         showToast,
+        isAuthenticated,
+        login,
+        register,
+        logout,
       }}
     >
       {children}

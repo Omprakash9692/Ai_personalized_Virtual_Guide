@@ -14,11 +14,13 @@
   "type": "commonjs",
   "dependencies": {
     "@google/genai": "^2.13.0",
+    "bcryptjs": "^3.0.3",
     "chromadb": "^3.5.0",
     "cors": "^2.8.6",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
     "groq-sdk": "^1.4.0",
+    "jsonwebtoken": "^9.0.3",
     "mongodb-memory-server": "^11.2.0",
     "mongoose": "^9.8.0",
     "multer": "^2.2.0",

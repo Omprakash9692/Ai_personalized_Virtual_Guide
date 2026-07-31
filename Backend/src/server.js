@@ -8,6 +8,7 @@ const voiceRoutes = require('./routes/voice.routes');
 const userRoutes = require('./routes/user.routes');
 const studyRoutes = require('./routes/study.routes');
 const vivaRoutes = require('./routes/viva.routes');
+const authRoutes = require('./routes/auth.routes');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -37,6 +38,7 @@ app.use('/api/voice', voiceRoutes);
 app.use('/api/user', userRoutes);
 app.use('/api/study', studyRoutes);
 app.use('/api/viva', vivaRoutes);
+app.use('/api/auth', authRoutes);
 
 // Health Check Route
 app.get('/health', (req, res) => {

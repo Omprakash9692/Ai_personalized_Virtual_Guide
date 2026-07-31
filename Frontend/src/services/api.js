@@ -10,6 +10,20 @@ const apiClient = axios.create({
   timeout: 120000, // 120s timeout for RAG / LLM / File processing
 });
 
+// Interceptor to attach JWT token to requests
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('vg_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+);
+
 /**
  * Health check endpoint
  */
@@ -110,6 +124,24 @@ export const getVivaQuestion = async (payload) => {
  */
 export const submitVivaAnswer = async (payload) => {
   const res = await apiClient.post('/api/viva/evaluate', payload);
+  return res.data;
+};
+
+/**
+ * Register a new user
+ * @param {Object} payload { name, email, password }
+ */
+export const registerUser = async (payload) => {
+  const res = await apiClient.post('/api/auth/register', payload);
+  return res.data;
+};
+
+/**
+ * Login existing user
+ * @param {Object} payload { email, password }
+ */
+export const loginUser = async (payload) => {
+  const res = await apiClient.post('/api/auth/login', payload);
   return res.data;
 };
 
