@@ -47,6 +47,24 @@ export const sendChatMessage = async (payload) => {
 };
 
 /**
+ * Fetch chat history for a given user
+ * @param {string} userId
+ */
+export const getChatHistory = async (userId) => {
+  const res = await apiClient.get(`/api/chat/history/${encodeURIComponent(userId)}`);
+  return res.data;
+};
+
+/**
+ * Clear chat history for a given user
+ * @param {string} userId
+ */
+export const clearChatHistory = async (userId) => {
+  const res = await apiClient.delete(`/api/chat/history/${encodeURIComponent(userId)}`);
+  return res.data;
+};
+
+/**
  * Upload PDF Document for RAG indexing
  * @param {File} file PDF File object
  */

@@ -26,14 +26,14 @@ export default function Sidebar({ activeTab, setActiveTab }) {
       {/* Mobile Header Bar */}
       <div className="md:hidden sticky top-0 z-40 bg-white dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 px-4 py-3 flex items-center justify-between">
         <div className="flex items-center space-x-3">
-          <div className="p-2 bg-blue-100 dark:bg-blue-900/40 rounded-xl">
-            <Sparkles className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+          <div className="flex items-center justify-center">
+            <Sparkles className="w-6 h-6 text-indigo-400" />
           </div>
           <div>
             <h1 className="text-base font-bold text-slate-900 dark:text-slate-100">
-              Virtual Guide
+              Aether AI
             </h1>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400">Personalized Assistant</p>
+            <p className="text-[10px] text-slate-500 dark:text-slate-400">AI Student Assistant</p>
           </div>
         </div>
 
@@ -64,17 +64,14 @@ export default function Sidebar({ activeTab, setActiveTab }) {
           
           <div className="flex items-center justify-between pt-1">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-blue-600 rounded-2xl shadow-sm shadow-blue-500/20 flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+              <div className="flex items-center justify-center">
+                <Sparkles className="w-8 h-8 text-indigo-400" />
               </div>
               <div>
                 <div className="flex items-center space-x-1.5">
-                  <h1 className="text-base font-black tracking-tight text-slate-900 dark:text-slate-100">
-                    Virtual Guide
+                  <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-slate-100">
+                    Aether AI
                   </h1>
-                  <span className="px-1.5 py-0.5 text-[9px] font-extrabold rounded bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800/60">
-                    v2.0
-                  </span>
                 </div>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium">AI Student Assistant</p>
               </div>

@@ -9,6 +9,7 @@ const userRoutes = require('./routes/user.routes');
 const studyRoutes = require('./routes/study.routes');
 const vivaRoutes = require('./routes/viva.routes');
 const authRoutes = require('./routes/auth.routes');
+const { protect } = require('./middleware/auth.middleware');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -32,13 +33,13 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // API Routes
-app.use('/api', chatRoutes);
-app.use('/api/document', documentRoutes);
-app.use('/api/voice', voiceRoutes);
-app.use('/api/user', userRoutes);
-app.use('/api/study', studyRoutes);
-app.use('/api/viva', vivaRoutes);
-app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes); // Auth routes should NOT be protected
+app.use('/api', protect, chatRoutes); // Protect chat
+app.use('/api/document', protect, documentRoutes);
+app.use('/api/voice', protect, voiceRoutes);
+app.use('/api/user', protect, userRoutes);
+app.use('/api/study', protect, studyRoutes);
+app.use('/api/viva', protect, vivaRoutes);
 
 // Health Check Route
 app.get('/health', (req, res) => {

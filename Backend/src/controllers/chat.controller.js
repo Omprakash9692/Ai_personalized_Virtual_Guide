@@ -99,6 +99,45 @@ async function handleChat(req, res) {
   }
 }
 
+/**
+ * Fetch chat history for a user
+ * @route GET /api/chat/history/:userId
+ */
+async function handleGetHistory(req, res) {
+  try {
+    const { userId } = req.params;
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'User ID is required' });
+    }
+    const history = await getConversationHistory(userId, 50); // Load last 50 messages
+    return res.status(200).json({ success: true, history });
+  } catch (error) {
+    console.error('Chat History Error:', error);
+    return res.status(500).json({ success: false, error: 'Failed to fetch history' });
+  }
+}
+
+/**
+ * Clear chat history for a user
+ * @route DELETE /api/chat/history/:userId
+ */
+async function handleClearHistory(req, res) {
+  try {
+    const { userId } = req.params;
+    const { clearHistory } = require('../services/memory.service');
+    if (!userId) {
+      return res.status(400).json({ success: false, error: 'User ID is required' });
+    }
+    await clearHistory(userId);
+    return res.status(200).json({ success: true, message: 'History cleared' });
+  } catch (error) {
+    console.error('Clear History Error:', error);
+    return res.status(500).json({ success: false, error: 'Failed to clear history' });
+  }
+}
+
 module.exports = {
   handleChat,
+  handleGetHistory,
+  handleClearHistory,
 };

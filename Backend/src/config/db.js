@@ -10,7 +10,7 @@ async function connectDB() {
 
   try {
     await mongoose.connect(uri);
-    console.log('[MongoDB Connected]: Atlas cloud database connected successfully.');
+    console.log('MongoDB Connected successfully.');
   } catch (error) {
     console.warn(`[MongoDB Notice]: Could not connect to Atlas (${error.message}). Services will use in-memory fallback.`);
     // Do NOT re-throw — server should still start and use in-memory cache fallbacks

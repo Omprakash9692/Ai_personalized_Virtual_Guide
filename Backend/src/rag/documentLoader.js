@@ -1,11 +1,6 @@
 const pdfModule = require('pdf-parse');
 
-/**
- * Parses PDF file buffer into clean text and page metadata across pdf-parse v1 and v2.
- * 
- * @param {Buffer} fileBuffer 
- * @returns {Promise<{ text: string, numPages: number, info: Object }>}
- */
+
 async function parsePdfBuffer(fileBuffer) {
   if (!fileBuffer || !Buffer.isBuffer(fileBuffer)) {
     throw new Error('Invalid input: fileBuffer must be a valid Buffer.');

@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Send, Bot, User as UserIcon, Sparkles, Volume2, VolumeX, Trash2, ShieldCheck, Copy, Check } from 'lucide-react';
+import { Send, Bot, User as UserIcon, Sparkles, Volume2, VolumeX, Trash2, ShieldCheck, Copy, Check, Mic } from 'lucide-react';
 import { useUser } from '../context/UserContext';
-import { sendChatMessage } from '../services/api';
+import { sendChatMessage, getChatHistory, clearChatHistory } from '../services/api';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
 import { useVoicePlayer } from '../hooks/useVoicePlayer';
-import VoiceInput from '../components/VoiceInput';
 import VoicePlayer from '../components/VoicePlayer';
 
 export default function ChatPage() {
@@ -70,6 +69,27 @@ export default function ChatPage() {
     }
   }, [sttError]);
 
+  // Load chat history on mount
+  useEffect(() => {
+    async function loadHistory() {
+      if (!userId) return;
+      try {
+        const res = await getChatHistory(userId);
+        if (res.success && res.history && res.history.length > 0) {
+          const loadedMessages = res.history.map((msg, idx) => ({
+            id: `history_${idx}_${Date.now()}`,
+            role: msg.role === 'user' ? 'user' : 'assistant',
+            text: msg.text,
+          }));
+          setMessages(loadedMessages);
+        }
+      } catch (err) {
+        console.error('Failed to load chat history:', err);
+      }
+    }
+    loadHistory();
+  }, [userId]);
+
   const handleSend = async (textToSend) => {
     const text = textToSend || inputMessage.trim();
     if (!text) return;
@@ -130,16 +150,22 @@ export default function ChatPage() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
-  const handleClearChat = () => {
-    setMessages([
-      {
-        id: `welcome_${Date.now()}`,
-        role: 'assistant',
-        text: 'Chat history reset. Ask me a question!',
-      },
-    ]);
-    stopAudio();
-    showToast('Conversation cleared', 'info');
+  const handleClearChat = async () => {
+    try {
+      await clearChatHistory(userId);
+      setMessages([
+        {
+          id: `welcome_${Date.now()}`,
+          role: 'assistant',
+          text: 'Chat history reset. Ask me a question!',
+        },
+      ]);
+      stopAudio();
+      showToast('Conversation cleared', 'info');
+    } catch (err) {
+      console.error('Failed to clear history:', err);
+      showToast('Failed to clear conversation history', 'error');
+    }
   };
 
   const promptTypes = [
@@ -317,6 +343,29 @@ export default function ChatPage() {
             className="flex-1 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner"
           />
 
+          {/* Mic Button */}
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              if (isListening) {
+                stopListening();
+              } else {
+                stopAudio();
+                startListening(language);
+              }
+            }}
+            disabled={loading || !isSttSupported}
+            className={`p-3.5 rounded-2xl shadow-sm transition-all transform active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center ${
+              isListening
+                ? 'bg-rose-500 hover:bg-rose-600 text-white animate-pulse shadow-rose-500/30'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 hover:text-blue-600 dark:hover:text-blue-400'
+            }`}
+            title={isListening ? 'Stop Listening' : 'Voice Input'}
+          >
+            <Mic className="w-5 h-5" />
+          </button>
+
           {/* Send Button */}
           <button
             type="submit"
@@ -327,18 +376,8 @@ export default function ChatPage() {
           </button>
         </form>
 
-        {/* Bottom Mic & Pro Tip Bar */}
-        <div className="flex items-center justify-between px-2 pt-1 border-t border-slate-100 dark:border-slate-800">
-          <VoiceInput
-            isListening={isListening}
-            onStart={() => {
-              stopAudio();
-              startListening(language);
-            }}
-            onStop={stopListening}
-            disabled={loading || !isSttSupported}
-          />
-
+        {/* Bottom Pro Tip Bar */}
+        <div className="flex items-center justify-end px-2 pt-1 border-t border-slate-100 dark:border-slate-800">
           <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
             Active User: <strong className="text-blue-600 dark:text-blue-400">{profile ? profile.name : userId}</strong>
           </span>
