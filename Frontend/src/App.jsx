@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { UserProvider, useUser } from './context/UserContext';
+import { ThemeProvider } from './context/ThemeContext';
 import AuthPage from './pages/AuthPage';
 import Sidebar from './components/Sidebar';
 import Toast from './components/Toast';
@@ -13,7 +14,7 @@ function AppContent() {
   const [activeTab, setActiveTab] = useState('chat');
 
   return (
-    <div className="h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 flex flex-col md:flex-row font-sans relative select-none">
+    <div className="h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col md:flex-row font-sans relative select-none transition-colors duration-300">
 
       {/* Left Sidebar Navigation */}
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
@@ -42,8 +43,10 @@ function AppController() {
 
 export default function App() {
   return (
-    <UserProvider>
-      <AppController />
-    </UserProvider>
+    <ThemeProvider>
+      <UserProvider>
+        <AppController />
+      </UserProvider>
+    </ThemeProvider>
   );
 }

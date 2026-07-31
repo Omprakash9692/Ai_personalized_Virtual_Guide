@@ -53,24 +53,24 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="flex-1 space-y-6">
+    <div className="flex-1 space-y-6 transition-colors duration-300">
       
       {/* Header Banner */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden transition-colors duration-300">
         <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex items-center space-x-3">
-            <div className="p-3 bg-blue-100 rounded-2xl">
-              <User className="w-7 h-7 text-blue-600" />
+            <div className="p-3 bg-blue-100 dark:bg-blue-900/30 rounded-2xl">
+              <User className="w-7 h-7 text-blue-600 dark:text-blue-400" />
             </div>
             <div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100">
                 Student Profile & Personalization
               </h2>
-              <p className="text-xs text-slate-500 font-medium">Configure your academic context to receive personalized AI responses</p>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-medium">Configure your academic context to receive personalized AI responses</p>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2 bg-emerald-50 px-4 py-2 rounded-2xl border border-emerald-100 text-xs text-emerald-700 font-bold w-max">
+          <div className="flex items-center space-x-2 bg-emerald-50 dark:bg-emerald-900/30 px-4 py-2 rounded-2xl border border-emerald-100 dark:border-emerald-800 text-xs text-emerald-700 dark:text-emerald-400 font-bold w-max">
             <ShieldCheck className="w-4 h-4" />
             <span>AI Memory Synced</span>
           </div>
@@ -78,39 +78,39 @@ export default function ProfilePage() {
       </div>
 
       {/* Main Settings Form Card */}
-      <form onSubmit={handleSubmit} className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+      <form onSubmit={handleSubmit} className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6 transition-colors duration-300">
         
         {/* Account Sync Header */}
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
+        <div className="p-4 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-inner">
           <div className="space-y-1">
-            <label className="text-xs font-extrabold uppercase tracking-wider text-blue-600 flex items-center space-x-1.5">
+            <label className="text-xs font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center space-x-1.5">
               <Key className="w-3.5 h-3.5" />
               <span>User Account ID:</span>
             </label>
-            <p className="text-xs text-slate-500">Unique identifier for multi-turn history & preferences in MongoDB.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Unique identifier for multi-turn history & preferences in MongoDB.</p>
           </div>
           <div className="flex items-center space-x-2">
             <input
               type="text"
               value={userId}
               onChange={(e) => setUserId(e.target.value)}
-              className="bg-white text-slate-900 border border-slate-300 rounded-xl px-3.5 py-2 text-xs font-mono focus:outline-none focus:border-blue-500"
+              className="bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 border border-slate-300 dark:border-slate-700 rounded-xl px-3.5 py-2 text-xs font-mono focus:outline-none focus:border-blue-500 transition-colors"
               placeholder="e.g. student_1"
-              readOnly // Should probably be read-only if they are authenticated with JWT, but keeping behavior same.
+              readOnly
             />
           </div>
         </div>
 
         {/* Basic Information Section */}
         <div className="space-y-4">
-          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center space-x-2 border-b border-slate-200 pb-2">
-            <User className="w-4 h-4 text-blue-500" />
+          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+            <User className="w-4 h-4 text-blue-500 dark:text-blue-400" />
             <span>Personal Information</span>
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Full Name *
               </label>
               <input
@@ -120,12 +120,12 @@ export default function ProfilePage() {
                 onChange={handleChange}
                 placeholder="e.g. Rahul Sharma"
                 required
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Email Address
               </label>
               <input
@@ -134,7 +134,7 @@ export default function ProfilePage() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="e.g. rahul@university.edu"
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
           </div>
@@ -142,21 +142,21 @@ export default function ProfilePage() {
 
         {/* Academic Details Section */}
         <div className="space-y-4">
-          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center space-x-2 border-b border-slate-200 pb-2">
-            <GraduationCap className="w-4 h-4 text-blue-500" />
+          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+            <GraduationCap className="w-4 h-4 text-blue-500 dark:text-blue-400" />
             <span>Academic Background</span>
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Department / Branch
               </label>
               <select
                 name="department"
                 value={formData.department}
                 onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 font-medium"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 font-medium transition-colors"
               >
                 <option value="Computer Science & Engineering">Computer Science & Engineering</option>
                 <option value="Information Technology">Information Technology</option>
@@ -170,14 +170,14 @@ export default function ProfilePage() {
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Current Semester
               </label>
               <select
                 name="semester"
                 value={formData.semester}
                 onChange={handleChange}
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 font-medium"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:border-blue-500 font-medium transition-colors"
               >
                 <option value="Semester 1 (1st Year)">Semester 1 (1st Year)</option>
                 <option value="Semester 2 (1st Year)">Semester 2 (1st Year)</option>
@@ -195,14 +195,14 @@ export default function ProfilePage() {
 
         {/* Goals & Interests Section */}
         <div className="space-y-4">
-          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 flex items-center space-x-2 border-b border-slate-200 pb-2">
-            <BookOpen className="w-4 h-4 text-blue-500" />
+          <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 flex items-center space-x-2 border-b border-slate-200 dark:border-slate-800 pb-2">
+            <BookOpen className="w-4 h-4 text-blue-500 dark:text-blue-400" />
             <span>Learning Goals & Focus Areas</span>
           </h3>
 
           <div className="space-y-4">
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Primary Learning Goal
               </label>
               <input
@@ -211,12 +211,12 @@ export default function ProfilePage() {
                 value={formData.learningGoal}
                 onChange={handleChange}
                 placeholder="e.g. Master Machine Learning algorithms & web development"
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+              <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
                 Technical Interests (comma-separated)
               </label>
               <input
@@ -225,7 +225,7 @@ export default function ProfilePage() {
                 value={formData.interests}
                 onChange={handleChange}
                 placeholder="e.g. Python, React, Deep Learning, Cloud Systems"
-                className="w-full bg-slate-50 text-slate-900 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400"
+                className="w-full bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all placeholder-slate-400 dark:placeholder-slate-500"
               />
             </div>
           </div>
@@ -233,10 +233,10 @@ export default function ProfilePage() {
 
         {/* Preferred Language */}
         <div>
-          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+          <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
             Preferred Language for AI Guidance
           </label>
-          <div className="flex bg-slate-50 p-1 rounded-2xl border border-slate-200 max-w-md">
+          <div className="flex bg-slate-50 dark:bg-slate-900 p-1 rounded-2xl border border-slate-200 dark:border-slate-800 max-w-md">
             {[
               { code: 'en', label: 'English' },
               { code: 'hi', label: 'Hindi (हिंदी)' },
@@ -249,7 +249,7 @@ export default function ProfilePage() {
                 className={`flex-1 py-2.5 text-xs font-bold rounded-xl transition-all ${
                   language === l.code
                     ? 'bg-blue-600 text-white shadow-sm'
-                    : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                 }`}
               >
                 {l.label}

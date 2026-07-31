@@ -85,23 +85,23 @@ export default function DocumentPage() {
     <div className="flex-1 space-y-6">
       
       {/* Header Banner */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden transition-colors duration-300">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="space-y-2">
             <div className="flex items-center space-x-3">
-              <div className="p-2.5 bg-blue-50 border border-blue-100 rounded-2xl text-blue-600">
+              <div className="p-2.5 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800 rounded-2xl text-blue-600 dark:text-blue-400">
                 <BookOpen className="w-6 h-6" />
               </div>
-              <h2 className="text-xl sm:text-2xl font-black text-slate-900">
+              <h2 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-slate-100">
                 PDF Document RAG Assistant
               </h2>
             </div>
-            <p className="text-xs sm:text-sm text-slate-500 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 max-w-2xl leading-relaxed">
               Upload textbook chapters, syllabi, or project PDFs. Our Vector RAG system chunks, embeds, and indexes your file to answer questions with exact citations.
             </p>
           </div>
 
-          <div className="flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-2xl border border-blue-100 text-xs text-blue-700 w-max">
+          <div className="flex items-center space-x-2 bg-blue-50 dark:bg-blue-900/30 px-4 py-2 rounded-2xl border border-blue-100 dark:border-blue-800 text-xs text-blue-700 dark:text-blue-400 w-max">
             <Layers className="w-4 h-4" />
             <span>Memory Vector DB</span>
           </div>
@@ -112,20 +112,20 @@ export default function DocumentPage() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Upload Column (4 cols) */}
-        <div className="lg:col-span-4 bg-white border border-slate-200 rounded-3xl p-6 space-y-5 shadow-sm flex flex-col justify-between">
+        <div className="lg:col-span-4 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 space-y-5 shadow-sm flex flex-col justify-between transition-colors duration-300">
           <div>
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-4 flex items-center space-x-2">
-              <Upload className="w-4 h-4 text-blue-500" />
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-4 flex items-center space-x-2">
+              <Upload className="w-4 h-4 text-blue-500 dark:text-blue-400" />
               <span>Upload PDF Document</span>
             </h3>
 
             {/* Drop Zone Box */}
-            <div className="border-2 border-dashed border-slate-300 hover:border-blue-400 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all bg-slate-50 group">
-              <FileText className="w-10 h-10 text-slate-400 group-hover:text-blue-500 transition-colors mb-3" />
-              <p className="text-xs font-bold text-slate-700 mb-1">
+            <div className="border-2 border-dashed border-slate-300 dark:border-slate-700 hover:border-blue-400 dark:hover:border-blue-500 rounded-2xl p-6 flex flex-col items-center justify-center text-center transition-all bg-slate-50 dark:bg-slate-900/50 group">
+              <FileText className="w-10 h-10 text-slate-400 dark:text-slate-600 group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors mb-3" />
+              <p className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
                 {file ? file.name : 'Click to select PDF'}
               </p>
-              <p className="text-[10px] text-slate-500 mb-4">Maximum file size: 10MB (.pdf)</p>
+              <p className="text-[10px] text-slate-500 dark:text-slate-500 mb-4">Maximum file size: 10MB (.pdf)</p>
 
               <input
                 type="file"
@@ -136,7 +136,7 @@ export default function DocumentPage() {
               />
               <label
                 htmlFor="pdf-upload-input"
-                className="cursor-pointer px-4 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-bold border border-slate-300 transition-all"
+                className="cursor-pointer px-4 py-2 rounded-xl bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-bold border border-slate-300 dark:border-slate-700 transition-all"
               >
                 Browse File
               </label>
@@ -163,13 +163,13 @@ export default function DocumentPage() {
 
           {/* Indexed Metadata Badge */}
           {docMetadata && (
-            <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 text-xs space-y-2">
-              <div className="flex items-center space-x-2 text-emerald-600 font-bold">
+            <div className="bg-emerald-50 dark:bg-emerald-900/30 border border-emerald-200 dark:border-emerald-800 rounded-2xl p-4 text-xs space-y-2">
+              <div className="flex items-center space-x-2 text-emerald-600 dark:text-emerald-400 font-bold">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>Document Ready</span>
               </div>
-              <div className="text-[11px] text-emerald-700 space-y-1">
-                <p>📄 File: <strong className="text-emerald-900">{docMetadata.fileName}</strong></p>
+              <div className="text-[11px] text-emerald-700 dark:text-emerald-300 space-y-1">
+                <p>📄 File: <strong className="text-emerald-900 dark:text-emerald-100">{docMetadata.fileName}</strong></p>
                 <p>📑 Pages: {docMetadata.numPages}</p>
                 <p>🧩 Chunks: {docMetadata.totalChunks} Vectors</p>
               </div>
@@ -178,11 +178,11 @@ export default function DocumentPage() {
         </div>
 
         {/* Query & RAG Viewport (8 cols) */}
-        <div className="lg:col-span-8 bg-white border border-slate-200 rounded-3xl p-6 flex flex-col justify-between space-y-5 shadow-sm">
+        <div className="lg:col-span-8 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 flex flex-col justify-between space-y-5 shadow-sm transition-colors duration-300">
           
           <div>
-            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 mb-4 flex items-center space-x-2">
-              <Search className="w-4 h-4 text-blue-500" />
+            <h3 className="text-xs font-extrabold uppercase tracking-wider text-slate-800 dark:text-slate-200 mb-4 flex items-center space-x-2">
+              <Search className="w-4 h-4 text-blue-500 dark:text-blue-400" />
               <span>Ask Questions About Indexed PDF</span>
             </h3>
 
@@ -193,7 +193,7 @@ export default function DocumentPage() {
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder="e.g. What are the main concepts in chapter 2? or Summarize page 4..."
                 disabled={querying}
-                className="flex-1 bg-slate-50 text-slate-900 placeholder-slate-400 border border-slate-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner"
+                className="flex-1 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner"
               />
               <button
                 type="submit"
@@ -211,29 +211,29 @@ export default function DocumentPage() {
           </div>
 
           {/* Answer Display Card */}
-          <div className="flex-1 bg-slate-50 border border-slate-200 rounded-2xl p-5 shadow-inner overflow-y-auto max-h-[450px]">
+          <div className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-inner overflow-y-auto max-h-[450px]">
             {answerData ? (
               <div className="space-y-4">
-                <div className="flex items-center justify-between border-b border-slate-200 pb-3">
-                  <span className="text-xs font-extrabold uppercase tracking-wider text-blue-700 flex items-center space-x-1.5">
-                    <Sparkles className="w-4 h-4 text-blue-500" />
+                <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+                  <span className="text-xs font-extrabold uppercase tracking-wider text-blue-700 dark:text-blue-400 flex items-center space-x-1.5">
+                    <Sparkles className="w-4 h-4 text-blue-500 dark:text-blue-400" />
                     <span>RAG Answer</span>
                   </span>
-                  <span className="text-[10px] bg-white border border-slate-200 px-2 py-0.5 rounded-full text-slate-500 font-mono uppercase">
+                  <span className="text-[10px] bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 px-2 py-0.5 rounded-full text-slate-500 dark:text-slate-400 font-mono uppercase">
                     Language: {answerData.language || 'en'}
                   </span>
                 </div>
 
-                <p className="text-sm leading-relaxed text-slate-800 whitespace-pre-wrap">
+                <p className="text-sm leading-relaxed text-slate-800 dark:text-slate-200 whitespace-pre-wrap">
                   {answerData.answer}
                 </p>
 
                 {/* Source Context Accordion */}
                 {answerData.retrievedContext && answerData.retrievedContext.length > 0 && (
-                  <div className="pt-3 border-t border-slate-200">
+                  <div className="pt-3 border-t border-slate-200 dark:border-slate-800">
                     <button
                       onClick={() => setShowSources(!showSources)}
-                      className="flex items-center justify-between w-full text-xs font-bold text-slate-500 hover:text-blue-600 transition-colors"
+                      className="flex items-center justify-between w-full text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                     >
                       <span>Retrieved PDF Chunks ({answerData.retrievedContext.length})</span>
                       {showSources ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
@@ -248,17 +248,17 @@ export default function DocumentPage() {
                           return (
                             <div
                               key={idx}
-                              className="p-3.5 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 space-y-1 font-mono"
+                              className="p-3.5 rounded-xl bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-xs text-slate-600 dark:text-slate-400 space-y-1 font-mono"
                             >
                               <div className="flex justify-between items-center">
-                                <span className="text-[10px] text-blue-600 font-bold">Chunk #{idx + 1}</span>
+                                <span className="text-[10px] text-blue-600 dark:text-blue-400 font-bold">Chunk #{idx + 1}</span>
                                 {score !== null && (
-                                  <span className="text-[9px] bg-blue-50 px-2 py-0.5 rounded text-blue-700">
+                                  <span className="text-[9px] bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded text-blue-700 dark:text-blue-400">
                                     Score: {score}%
                                   </span>
                                 )}
                               </div>
-                              <p className="text-slate-600 leading-normal whitespace-pre-wrap">{chunkText}</p>
+                              <p className="text-slate-600 dark:text-slate-400 leading-normal whitespace-pre-wrap">{chunkText}</p>
                             </div>
                           );
                         })}
@@ -268,10 +268,10 @@ export default function DocumentPage() {
                 )}
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400 space-y-2">
-                <BookOpen className="w-10 h-10 opacity-30 mb-2 text-slate-400" />
-                <p className="text-xs font-bold text-slate-500">No document query performed yet</p>
-                <p className="text-[11px] text-slate-400 max-w-sm">
+              <div className="h-full flex flex-col items-center justify-center text-center p-8 text-slate-400 dark:text-slate-600 space-y-2">
+                <BookOpen className="w-10 h-10 opacity-30 mb-2 text-slate-400 dark:text-slate-600" />
+                <p className="text-xs font-bold text-slate-500 dark:text-slate-500">No document query performed yet</p>
+                <p className="text-[11px] text-slate-400 dark:text-slate-500 max-w-sm">
                   Upload a PDF document on the left and type your query above to search vector memory.
                 </p>
               </div>

@@ -5,12 +5,11 @@ const { generateVivaQuestion, evaluateVivaAnswer } = require('../services/viva.s
  */
 async function handleGetQuestion(req, res) {
   try {
-    const { branch, subject, persona, previousTurns } = req.body;
+    const { jobRole, round, previousTurns } = req.body;
 
     const data = await generateVivaQuestion({
-      branch,
-      subject,
-      persona,
+      jobRole,
+      round,
       previousTurns,
     });
 
@@ -19,10 +18,10 @@ async function handleGetQuestion(req, res) {
       data,
     });
   } catch (error) {
-    console.error('[Viva Controller Error - GetQuestion]:', error);
+    console.error('[Interview Controller Error - GetQuestion]:', error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to generate viva question.',
+      error: error.message || 'Failed to generate interview question.',
     });
   }
 }
@@ -32,7 +31,7 @@ async function handleGetQuestion(req, res) {
  */
 async function handleEvaluateAnswer(req, res) {
   try {
-    const { question, studentAnswer, branch, subject, persona } = req.body;
+    const { question, studentAnswer, jobRole, round } = req.body;
 
     if (!question || !studentAnswer) {
       return res.status(400).json({
@@ -44,9 +43,8 @@ async function handleEvaluateAnswer(req, res) {
     const scorecard = await evaluateVivaAnswer({
       question,
       studentAnswer,
-      branch,
-      subject,
-      persona,
+      jobRole,
+      round,
     });
 
     return res.status(200).json({
@@ -54,10 +52,10 @@ async function handleEvaluateAnswer(req, res) {
       data: scorecard,
     });
   } catch (error) {
-    console.error('[Viva Controller Error - EvaluateAnswer]:', error);
+    console.error('[Interview Controller Error - EvaluateAnswer]:', error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to evaluate viva answer.',
+      error: error.message || 'Failed to evaluate interview answer.',
     });
   }
 }

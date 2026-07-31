@@ -153,7 +153,7 @@ export default function ChatPage() {
     <div className="flex-1 h-[calc(100vh-3.5rem)] flex flex-col justify-between space-y-4">
       
       {/* Top Header & Control Toolbar */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-3.5 flex flex-wrap items-center justify-between gap-3 shadow-sm transition-colors duration-300">
         
         {/* Prompt Modes Pills */}
         <div className="flex items-center space-x-1.5 overflow-x-auto no-scrollbar">
@@ -166,8 +166,8 @@ export default function ChatPage() {
               onClick={() => setPromptType(mode.id)}
               className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all whitespace-nowrap ${
                 promptType === mode.id
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'bg-slate-50 text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200'
+                  ? 'bg-blue-600 dark:bg-blue-600 text-white shadow-sm'
+                  : 'bg-slate-50 dark:bg-slate-900 text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800'
               }`}
             >
               {mode.label}
@@ -182,12 +182,12 @@ export default function ChatPage() {
             onClick={() => setVoiceEnabled(!voiceEnabled)}
             className={`flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all border ${
               voiceEnabled
-                ? 'bg-blue-50 border-blue-200 text-blue-700'
-                : 'bg-slate-50 border-slate-200 text-slate-500'
+                ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-400'
+                : 'bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-500'
             }`}
             title="Toggle AI voice audio response"
           >
-            {voiceEnabled ? <Volume2 className="w-3.5 h-3.5 text-blue-500" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400" />}
+            {voiceEnabled ? <Volume2 className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" /> : <VolumeX className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600" />}
             <span>{voiceEnabled ? 'Voice On' : 'Voice Off'}</span>
           </button>
 
@@ -203,7 +203,7 @@ export default function ChatPage() {
           {/* Reset Chat Button */}
           <button
             onClick={handleClearChat}
-            className="p-2 rounded-xl bg-slate-50 hover:bg-rose-50 text-slate-500 hover:text-rose-600 transition-colors border border-slate-200"
+            className="p-2 rounded-xl bg-slate-50 dark:bg-slate-900 hover:bg-rose-50 dark:hover:bg-rose-900/30 text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors border border-slate-200 dark:border-slate-800"
             title="Clear Chat History"
           >
             <Trash2 className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function ChatPage() {
       </div>
 
       {/* Main Messages Scrolling Viewport */}
-      <div className="flex-1 bg-slate-50 border border-slate-200 rounded-3xl p-4 sm:p-6 overflow-y-auto space-y-4 shadow-inner">
+      <div className="flex-1 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-4 sm:p-6 overflow-y-auto space-y-4 shadow-inner transition-colors duration-300">
         {messages.map((msg) => (
           <div
             key={msg.id}
@@ -223,11 +223,11 @@ export default function ChatPage() {
               className={`max-w-[88%] sm:max-w-[78%] p-4 sm:p-5 rounded-3xl text-sm leading-relaxed shadow-sm ${
                 msg.role === 'user'
                   ? 'bg-blue-600 text-white rounded-br-none'
-                  : 'bg-white border border-slate-200 text-slate-800 rounded-bl-none'
+                  : 'bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-none'
               }`}
             >
               {/* Message Metadata Header */}
-              <div className="flex items-center justify-between mb-2.5 text-[10px] font-semibold uppercase tracking-wider opacity-80 border-b border-slate-200/50 pb-2">
+              <div className="flex items-center justify-between mb-2.5 text-[10px] font-semibold uppercase tracking-wider opacity-80 border-b border-slate-200/50 dark:border-slate-700/50 pb-2">
                 <span className="flex items-center space-x-1.5">
                   {msg.role === 'user' ? (
                     <>
@@ -236,15 +236,15 @@ export default function ChatPage() {
                     </>
                   ) : (
                     <>
-                      <Bot className="w-3.5 h-3.5 text-blue-500" />
-                      <span className="font-bold text-blue-600">Virtual Guide AI</span>
+                      <Bot className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400" />
+                      <span className="font-bold text-blue-600 dark:text-blue-400">Virtual Guide AI</span>
                     </>
                   )}
                 </span>
 
                 <div className="flex items-center space-x-2">
                   {msg.personalized && (
-                    <span className="flex items-center space-x-1 text-[9px] bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-full lowercase">
+                    <span className="flex items-center space-x-1 text-[9px] bg-emerald-50 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 px-2 py-0.5 rounded-full lowercase">
                       <ShieldCheck className="w-2.5 h-2.5" />
                       <span>Personalized</span>
                     </span>
@@ -252,16 +252,16 @@ export default function ChatPage() {
                   {msg.role === 'assistant' && (
                     <button
                       onClick={() => handleCopyText(msg.id, msg.text)}
-                      className="hover:text-blue-600 transition-colors p-1 text-slate-400"
+                      className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors p-1 text-slate-400 dark:text-slate-500"
                       title="Copy text"
                     >
-                      {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                      {copiedId === msg.id ? <Check className="w-3 h-3 text-emerald-500 dark:text-emerald-400" /> : <Copy className="w-3 h-3" />}
                     </button>
                   )}
                   {msg.audioUrl && (
                     <button
                       onClick={() => playAudio(msg.audioUrl)}
-                      className="hover:underline flex items-center space-x-1 text-blue-600 text-[10px] font-bold"
+                      className="hover:underline flex items-center space-x-1 text-blue-600 dark:text-blue-400 text-[10px] font-bold"
                     >
                       <Volume2 className="w-3 h-3" />
                       <span>Play Voice</span>
@@ -279,7 +279,7 @@ export default function ChatPage() {
         {/* Interim STT Live Transcript */}
         {interimTranscript && (
           <div className="flex flex-col items-end">
-            <div className="max-w-[75%] p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 text-xs italic animate-pulse shadow-sm">
+            <div className="max-w-[75%] p-3.5 rounded-2xl bg-blue-50 dark:bg-blue-900/30 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs italic animate-pulse shadow-sm">
               Listening: "{interimTranscript}..."
             </div>
           </div>
@@ -287,9 +287,9 @@ export default function ChatPage() {
 
         {/* AI Thinking Spinner */}
         {loading && (
-          <div className="flex items-center space-x-3 bg-white border border-slate-200 p-4 rounded-2xl w-max shadow-sm">
+          <div className="flex items-center space-x-3 bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 rounded-2xl w-max shadow-sm">
             <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <span className="text-xs font-bold text-slate-600">
+            <span className="text-xs font-bold text-slate-600 dark:text-slate-400">
               AI is reasoning & synthesizing response...
             </span>
           </div>
@@ -299,7 +299,7 @@ export default function ChatPage() {
       </div>
 
       {/* Floating Bottom Chat Input Bar */}
-      <div className="bg-white border border-slate-200 rounded-3xl p-3 sm:p-4 shadow-sm space-y-3">
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-3 sm:p-4 shadow-sm space-y-3 transition-colors duration-300">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -314,7 +314,7 @@ export default function ChatPage() {
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder={isListening ? 'Listening... Speak into your microphone' : 'Ask any academic question, study advice, or career topic...'}
             disabled={loading}
-            className="flex-1 bg-slate-50 text-slate-900 placeholder-slate-400 border border-slate-200 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner"
+            className="flex-1 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 border border-slate-200 dark:border-slate-800 rounded-2xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500 transition-all shadow-inner"
           />
 
           {/* Send Button */}
@@ -328,7 +328,7 @@ export default function ChatPage() {
         </form>
 
         {/* Bottom Mic & Pro Tip Bar */}
-        <div className="flex items-center justify-between px-2 pt-1 border-t border-slate-100">
+        <div className="flex items-center justify-between px-2 pt-1 border-t border-slate-100 dark:border-slate-800">
           <VoiceInput
             isListening={isListening}
             onStart={() => {
@@ -339,8 +339,8 @@ export default function ChatPage() {
             disabled={loading || !isSttSupported}
           />
 
-          <span className="text-[11px] text-slate-500 font-medium hidden sm:inline">
-            Active User: <strong className="text-blue-600">{profile ? profile.name : userId}</strong>
+          <span className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:inline">
+            Active User: <strong className="text-blue-600 dark:text-blue-400">{profile ? profile.name : userId}</strong>
           </span>
         </div>
       </div>
