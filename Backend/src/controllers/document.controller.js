@@ -62,8 +62,9 @@ async function queryDocument(req, res) {
       });
     }
 
-    // 1. Load user conversation history (Memory integration)
-    const history = await getConversationHistory(userId);
+    // 1. Load user conversation history for RAG specifically
+    const ragUserId = `${userId}_rag`;
+    const history = await getConversationHistory(ragUserId);
 
     // 2. Perform RAG query (Vector search + Gemini/Groq generation)
     const ragResult = await queryRAG(query.trim(), {
@@ -71,8 +72,8 @@ async function queryDocument(req, res) {
       history: history,
     });
 
-    // 3. Save query and answer in MongoDB conversation memory
-    await saveMessagePair(userId, query.trim(), ragResult.answer, sessionId);
+    // 3. Save query and answer in MongoDB conversation memory exclusively for RAG
+    await saveMessagePair(ragUserId, query.trim(), ragResult.answer, sessionId);
 
     // 4. Return answer and retrieved context
     return res.status(200).json({

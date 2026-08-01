@@ -90,11 +90,26 @@ export default function VivaSimulatorPage() {
     }
   }, [transcript]);
 
+  // Unlocks browser audio autoplay policies on user interaction
+  const unlockAudio = () => {
+    if (typeof window !== 'undefined' && window.speechSynthesis) {
+      const utterance = new SpeechSynthesisUtterance('');
+      utterance.volume = 0;
+      window.speechSynthesis.speak(utterance);
+    }
+  };
+
   const startSession = async () => {
+    unlockAudio();
     setSessionActive(true);
     setScorecard(null);
     setHistory([]);
     await fetchNextQuestion();
+  };
+
+  const handleNextQuestionClick = (isFollowup = false, customQuestionText = null) => {
+    unlockAudio();
+    fetchNextQuestion(isFollowup, customQuestionText);
   };
 
   const fetchNextQuestion = async (isFollowup = false, customQuestionText = null) => {
@@ -135,30 +150,51 @@ export default function VivaSimulatorPage() {
     }
   };
 
-  const handleSpeakQuestion = async () => {
-    if (!currentQuestion?.question) return;
+  const handleSpeakQuestion = async (textToSpeak) => {
+    const text = typeof textToSpeak === 'string' ? textToSpeak : currentQuestion?.question;
+    if (!text) return;
     setIsPlayingAudio(true);
+    
+    const fallbackSpeak = () => {
+      if (typeof window !== 'undefined' && window.speechSynthesis) {
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.onend = () => setIsPlayingAudio(false);
+        utterance.onerror = () => setIsPlayingAudio(false);
+        window.speechSynthesis.speak(utterance);
+      } else {
+        setIsPlayingAudio(false);
+      }
+    };
+
     try {
       const res = await synthesizeVoice({
-        text: currentQuestion.question,
+        text: text,
         language: 'en',
       });
       if (res && res.audioContent) {
         const audio = new Audio(`data:audio/mp3;base64,${res.audioContent}`);
-        audio.play();
         audio.onended = () => setIsPlayingAudio(false);
+        audio.onerror = () => fallbackSpeak();
+        
+        audio.play().catch((e) => {
+          console.warn('Audio autoplay blocked, falling back to browser TTS:', e);
+          fallbackSpeak();
+        });
       } else {
-        const utterance = new SpeechSynthesisUtterance(currentQuestion.question);
-        window.speechSynthesis.speak(utterance);
-        utterance.onend = () => setIsPlayingAudio(false);
+        fallbackSpeak();
       }
     } catch (e) {
-      console.warn('Voice Synthesis Fallback:', e);
-      const utterance = new SpeechSynthesisUtterance(currentQuestion.question);
-      window.speechSynthesis.speak(utterance);
-      utterance.onend = () => setIsPlayingAudio(false);
+      console.warn('Voice Synthesis API failed, using fallback:', e);
+      fallbackSpeak();
     }
   };
+
+  // Auto-play the question when it is generated
+  useEffect(() => {
+    if (sessionActive && currentQuestion?.question) {
+      handleSpeakQuestion(currentQuestion.question);
+    }
+  }, [currentQuestion?.question]);
 
   const handleToggleRecord = () => {
     if (isListening) {
@@ -199,6 +235,29 @@ export default function VivaSimulatorPage() {
             scorecard: response.data,
           },
         ]);
+        const newScorePercent = Math.round((response.data.score / 10) * 100);
+        
+        // Dynamic Skill Tracker Calculation
+        const currentRole = jobRoleInput || 'Software Engineer';
+        const savedProgressStr = localStorage.getItem('subjectProgress');
+        let progressArray = savedProgressStr ? JSON.parse(savedProgressStr) : [];
+        
+        const existingSkillIndex = progressArray.findIndex(s => s.name === currentRole);
+        if (existingSkillIndex >= 0) {
+          // Calculate running average
+          progressArray[existingSkillIndex].progress = Math.round((progressArray[existingSkillIndex].progress + newScorePercent) / 2);
+        } else {
+          // Pick a random vibrant color for new skill
+          const colors = ['bg-blue-500', 'bg-emerald-500', 'bg-purple-500', 'bg-rose-500', 'bg-amber-500', 'bg-cyan-500'];
+          const randomColor = colors[Math.floor(Math.random() * colors.length)];
+          progressArray.push({ name: currentRole, progress: newScorePercent, color: randomColor });
+        }
+        localStorage.setItem('subjectProgress', JSON.stringify(progressArray));
+
+        if (response.data.score < 8) {
+          localStorage.setItem('weakestTopic', currentRole);
+        }
+
         showToast(`Answer evaluated! Score: ${response.data.score}/10`, 'success');
       } else {
         throw new Error(response?.error || 'Failed to evaluate answer.');
@@ -431,7 +490,7 @@ export default function VivaSimulatorPage() {
               {/* Action Submit Button */}
               <div className="flex items-center justify-between">
                 <button
-                  onClick={() => fetchNextQuestion()}
+                  onClick={() => handleNextQuestionClick()}
                   disabled={loadingQuestion || evaluating}
                   className="px-4 py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-bold rounded-xl transition-all flex items-center space-x-2"
                 >
@@ -570,7 +629,7 @@ export default function VivaSimulatorPage() {
                 <div className="space-y-2 pt-2">
                   {scorecard.followupQuestion && (
                     <button
-                      onClick={() => fetchNextQuestion(true, scorecard.followupQuestion)}
+                      onClick={() => handleNextQuestionClick(true, scorecard.followupQuestion)}
                       className="w-full py-3 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center space-x-2"
                     >
                       <span>Take Follow-up Question</span>
@@ -579,7 +638,7 @@ export default function VivaSimulatorPage() {
                   )}
 
                   <button
-                    onClick={() => fetchNextQuestion()}
+                    onClick={() => handleNextQuestionClick()}
                     className="w-full py-2.5 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-bold text-xs rounded-xl transition-all"
                   >
                     Next Mock Question

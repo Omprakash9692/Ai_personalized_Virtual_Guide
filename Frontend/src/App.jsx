@@ -10,9 +10,10 @@ import DocumentPage from './pages/DocumentPage';
 import ProfilePage from './pages/ProfilePage';
 import StudyGeneratorPage from './pages/StudyGeneratorPage';
 import VivaSimulatorPage from './pages/VivaSimulatorPage';
+import DashboardPage from './pages/DashboardPage';
 
 function AppContent() {
-  const [activeTab, setActiveTab] = useState('chat');
+  const [activeTab, setActiveTab] = useState('dashboard');
 
   return (
     <div className="h-screen w-screen overflow-hidden bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-100 flex flex-col md:flex-row font-sans relative select-none transition-colors duration-300">
@@ -22,6 +23,7 @@ function AppContent() {
       {/* Main Viewport Workspace */}
       <main className="flex-1 min-w-0 h-screen overflow-y-auto z-10 flex flex-col p-4 sm:p-6 lg:p-8 relative">
         <div className="w-full max-w-6xl mx-auto flex-1 flex flex-col">
+          {activeTab === 'dashboard' && <DashboardPage setActiveTab={setActiveTab} />}
           {activeTab === 'chat' && <ChatPage />}
           {activeTab === 'viva' && <VivaSimulatorPage />}
           {activeTab === 'study' && <StudyGeneratorPage />}

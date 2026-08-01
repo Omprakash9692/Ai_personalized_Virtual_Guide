@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   BookOpen,
@@ -38,6 +38,16 @@ export default function StudyGeneratorPage() {
   const [copiedNotes, setCopiedNotes] = useState(false);
   const [expandedSolutions, setExpandedSolutions] = useState({});
   const [difficultyFilter, setDifficultyFilter] = useState('All');
+
+  useEffect(() => {
+    const savedTopic = localStorage.getItem('studyTopic');
+    if (savedTopic) {
+      setTopic(savedTopic);
+      localStorage.removeItem('studyTopic'); // Clear it after reading
+      // Automatically trigger generation
+      setTimeout(() => handleGenerate(savedTopic), 500);
+    }
+  }, []);
 
   const handleGenerate = async (targetTopic) => {
     const queryTopic = targetTopic || topic;

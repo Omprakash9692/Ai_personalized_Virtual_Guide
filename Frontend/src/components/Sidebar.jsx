@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, FileText, Mic, User, Sparkles, ShieldCheck, Menu, X, Layers, Activity, Zap, Award, LogOut, Moon, Sun } from 'lucide-react';
+import { MessageSquare, FileText, Mic, User, Sparkles, ShieldCheck, Menu, X, Layers, Activity, Zap, Award, LogOut, Moon, Sun, LayoutDashboard } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -9,6 +9,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, description: 'Overview & Analytics' },
     { id: 'chat', label: 'AI Voice Chat', icon: MessageSquare, description: 'Voice & text AI assistant' },
     { id: 'viva', label: 'Interview Simulator', icon: Award, badge: 'Voice AI', description: 'Mock interview & grading' },
     { id: 'study', label: 'Auto Study Kit', icon: Zap, badge: 'AI Notes', description: 'Notes, Mindmaps & PYQs' },
