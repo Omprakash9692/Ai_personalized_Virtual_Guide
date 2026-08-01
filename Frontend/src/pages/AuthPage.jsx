@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useUser } from '../context/UserContext';
 import { Bot, LogIn, UserPlus, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '964695678508-hs6p98llsa4lg58qa3cqse1d7d4t81gn.apps.googleusercontent.com';
+
 export default function AuthPage() {
-  const { login, register, isHealthOk } = useUser();
+  const { login, register, googleLogin, isHealthOk } = useUser();
   const [isLoginMode, setIsLoginMode] = useState(true);
   
   // Form State
@@ -11,6 +13,52 @@ export default function AuthPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
+  const googleBtnRef = useRef(null);
+
+  const handleGoogleCallback = useCallback(async (response) => {
+    if (response.credential) {
+      setIsLoading(true);
+      await googleLogin(response.credential);
+      setIsLoading(false);
+    }
+  }, [googleLogin]);
+
+  useEffect(() => {
+    // Wait for the Google Identity Services script to load
+    const initializeGoogle = () => {
+      if (window.google && window.google.accounts) {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: handleGoogleCallback,
+        });
+
+        if (googleBtnRef.current) {
+          window.google.accounts.id.renderButton(googleBtnRef.current, {
+            theme: 'outline',
+            size: 'large',
+            width: googleBtnRef.current.offsetWidth,
+            text: 'continue_with',
+            shape: 'pill',
+            logo_alignment: 'center',
+          });
+        }
+      }
+    };
+
+    // The script may not be loaded yet, so retry
+    if (window.google && window.google.accounts) {
+      initializeGoogle();
+    } else {
+      const interval = setInterval(() => {
+        if (window.google && window.google.accounts) {
+          clearInterval(interval);
+          initializeGoogle();
+        }
+      }, 100);
+      return () => clearInterval(interval);
+    }
+  }, [handleGoogleCallback]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -113,7 +161,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={isLoading || (!isHealthOk && false)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 mt-4 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 mt-4 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -130,6 +178,21 @@ export default function AuthPage() {
             )}
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">or continue with</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+        </div>
+
+        {/* Google Sign-In Button at Bottom */}
+        <div className="w-full flex justify-center">
+          <div 
+            ref={googleBtnRef} 
+            className="w-full flex items-center justify-center min-h-[44px]"
+          ></div>
+        </div>
 
         {/* Toggle Mode */}
         <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
