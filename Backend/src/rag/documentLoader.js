@@ -1,5 +1,10 @@
 const pdfModule = require('pdf-parse');
+const { GoogleGenAI } = require('@google/genai');
 
+const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY || '' });
+
+// Minimum character threshold — below this we consider the PDF as image/scanned
+const MIN_TEXT_LENGTH = 50;
 
 async function parsePdfBuffer(fileBuffer) {
   if (!fileBuffer || !Buffer.isBuffer(fileBuffer)) {
@@ -18,7 +23,6 @@ async function parsePdfBuffer(fileBuffer) {
 
   // Handle pdf-parse v2.x (class export)
   if (pdfModule && typeof pdfModule.PDFParse === 'function') {
-    // Pass Uint8Array view of buffer to constructor options
     const uint8Array = new Uint8Array(fileBuffer.buffer, fileBuffer.byteOffset, fileBuffer.byteLength);
 
     const parser = new pdfModule.PDFParse({
@@ -59,24 +63,80 @@ async function parsePdfBuffer(fileBuffer) {
 }
 
 /**
- * Extracts raw text from a PDF Buffer or File.
- * 
+ * Uses Gemini Vision to extract text from a scanned / image-based PDF.
+ * Gemini natively supports PDF files — no external OCR binary needed.
+ *
+ * @param {Buffer} fileBuffer
+ * @returns {Promise<string>} Extracted text
+ */
+async function extractTextWithGemini(fileBuffer) {
+  const apiKey = process.env.GEMINI_API_KEY;
+
+  if (!apiKey || apiKey.startsWith('AQ.')) {
+    throw new Error('GEMINI_API_KEY is required for OCR on scanned PDFs.');
+  }
+
+  console.log('[Document Loader]: Text layer empty — falling back to Gemini Vision OCR...');
+
+  const base64Data = fileBuffer.toString('base64');
+
+  const response = await ai.models.generateContent({
+    model: process.env.GEMINI_MODEL || 'gemini-2.0-flash',
+    contents: [
+      {
+        parts: [
+          {
+            inlineData: {
+              mimeType: 'application/pdf',
+              data: base64Data,
+            },
+          },
+          {
+            text: `Extract all the text content from this PDF document exactly as it appears.
+- Preserve paragraphs, headings, and logical structure.
+- If the document contains tables, extract them as plain text rows.
+- Do NOT summarize, translate, or paraphrase — return only the raw extracted text.
+- Support all languages including English, Hindi, and Odia.`,
+          },
+        ],
+      },
+    ],
+  });
+
+  const text = response?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+
+  if (!text.trim()) {
+    throw new Error('Gemini Vision OCR returned no text from the PDF.');
+  }
+
+  console.log(`[Document Loader]: Gemini OCR extracted ${text.length} characters from scanned PDF.`);
+  return text.trim();
+}
+
+/**
+ * Extracts raw text from a PDF Buffer.
+ * Tries pdf-parse first (fast, text-layer PDFs).
+ * Falls back to Gemini Vision OCR for scanned / image-based PDFs.
+ *
  * @param {Buffer} fileBuffer - Buffer containing PDF file data
- * @returns {Promise<{ text: string, numPages: number, info: Object }>} Extracted text and document metadata
+ * @returns {Promise<{ text: string, numPages: number, info: Object }>}
  */
 async function loadPdfText(fileBuffer) {
   try {
     const parsed = await parsePdfBuffer(fileBuffer);
 
     // Clean text (normalize whitespace, page footers, and control characters)
-    const cleanedText = (parsed.text || '')
+    let cleanedText = (parsed.text || '')
       .replace(/-- \d+ of \d+ --/g, '')
       .replace(/\r\n/g, '\n')
       .replace(/\u0000/g, '')
       .trim();
 
-    if (!cleanedText) {
-      throw new Error('No readable text content found in the provided PDF file.');
+    // If text layer is empty or too short, the PDF is likely scanned — use Gemini OCR
+    if (cleanedText.length < MIN_TEXT_LENGTH) {
+      cleanedText = await extractTextWithGemini(fileBuffer);
+    } else {
+      console.log(`[Document Loader]: Extracted ${cleanedText.length} characters via pdf-parse (text layer).`);
     }
 
     return {
