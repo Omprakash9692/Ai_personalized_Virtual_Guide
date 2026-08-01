@@ -98,22 +98,6 @@ export default function AuthPage() {
           </div>
         )}
 
-        {/* Google Sign-In Button */}
-        <div className="mb-5">
-          <div 
-            ref={googleBtnRef} 
-            className="w-full flex items-center justify-center"
-            style={{ minHeight: '44px' }}
-          ></div>
-        </div>
-
-        {/* Divider */}
-        <div className="flex items-center gap-3 mb-5">
-          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
-          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">or</span>
-          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-700"></div>
-        </div>
-
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           
@@ -177,7 +161,7 @@ export default function AuthPage() {
           <button
             type="submit"
             disabled={isLoading || (!isHealthOk && false)}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 mt-4 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center space-x-2 mt-4 active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed cursor-pointer"
           >
             {isLoading ? (
               <Loader2 className="w-5 h-5 animate-spin" />
@@ -194,6 +178,21 @@ export default function AuthPage() {
             )}
           </button>
         </form>
+
+        {/* Divider */}
+        <div className="flex items-center gap-3 my-6">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+          <span className="text-xs text-slate-400 dark:text-slate-500 font-medium uppercase tracking-wider">or continue with</span>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-slate-800"></div>
+        </div>
+
+        {/* Google Sign-In Button at Bottom */}
+        <div className="w-full flex justify-center">
+          <div 
+            ref={googleBtnRef} 
+            className="w-full flex items-center justify-center min-h-[44px]"
+          ></div>
+        </div>
 
         {/* Toggle Mode */}
         <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
