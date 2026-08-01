@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { checkHealth, getUserProfile as apiGetUserProfile, saveUserProfile as apiSaveUserProfile, loginUser, registerUser } from '../services/api';
+import { checkHealth, getUserProfile as apiGetUserProfile, saveUserProfile as apiSaveUserProfile, loginUser, registerUser, googleLoginUser } from '../services/api';
 
 const UserContext = createContext();
 
@@ -130,6 +130,24 @@ export const UserProvider = ({ children }) => {
     }
   };
 
+  const googleLogin = async (credential) => {
+    try {
+      const res = await googleLoginUser({ credential });
+      if (res.success) {
+        setAuthToken(res.token);
+        setUserId(res.user.userId);
+        localStorage.setItem('vg_token', res.token);
+        localStorage.setItem('vg_userId', res.user.userId);
+        showToast('Signed in with Google successfully', 'success');
+        return true;
+      }
+      throw new Error(res.error || 'Google login failed');
+    } catch (err) {
+      showToast(err?.response?.data?.error || err.message || 'Error signing in with Google', 'error');
+      return false;
+    }
+  };
+
   const logout = () => {
     setAuthToken(null);
     setUserId(null);
@@ -154,6 +172,7 @@ export const UserProvider = ({ children }) => {
         isAuthenticated,
         login,
         register,
+        googleLogin,
         logout,
       }}
     >

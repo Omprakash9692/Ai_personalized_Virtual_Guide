@@ -24,6 +24,20 @@ apiClient.interceptors.request.use(
   }
 );
 
+// Interceptor to handle 401 (expired/invalid token) — auto logout
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response && error.response.status === 401) {
+      // Clear stale auth data and reload to force re-login
+      localStorage.removeItem('vg_token');
+      localStorage.removeItem('vg_userId');
+      window.location.reload();
+    }
+    return Promise.reject(error);
+  }
+);
+
 /**
  * Health check endpoint
  */
@@ -160,6 +174,15 @@ export const registerUser = async (payload) => {
  */
 export const loginUser = async (payload) => {
   const res = await apiClient.post('/api/auth/login', payload);
+  return res.data;
+};
+
+/**
+ * Login or register using Google OAuth
+ * @param {Object} payload { credential } - Google ID token
+ */
+export const googleLoginUser = async (payload) => {
+  const res = await apiClient.post('/api/auth/google', payload);
   return res.data;
 };
 
