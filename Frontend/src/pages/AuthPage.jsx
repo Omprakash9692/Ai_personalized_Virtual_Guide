@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useUser } from '../context/UserContext';
 import { Bot, LogIn, UserPlus, Mail, Lock, User as UserIcon, Loader2 } from 'lucide-react';
 
-const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || '964695678508-hs6p98llsa4lg58qa3cqse1d7d4t81gn.apps.googleusercontent.com';
 
 export default function AuthPage() {
   const { login, register, googleLogin, isHealthOk } = useUser();

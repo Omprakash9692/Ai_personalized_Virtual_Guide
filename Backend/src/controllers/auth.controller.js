@@ -5,7 +5,7 @@ const { OAuth2Client } = require('google-auth-library');
 
 // Secret for JWT - in production this should be in .env
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback_secret_key_for_dev';
-const GOOGLE_CLIENT_ID = process.env.VITE_GOOGLE_CLIENT_ID;
+const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID || process.env.VITE_GOOGLE_CLIENT_ID || '964695678508-hs6p98llsa4lg58qa3cqse1d7d4t81gn.apps.googleusercontent.com';
 
 const googleClient = new OAuth2Client(GOOGLE_CLIENT_ID);
 
