@@ -164,18 +164,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
 
 
 
-          {/* Backend Connection Badge */}
-          <div className="flex flex-col space-y-2">
-            <div className="flex items-center justify-between px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-[11px]">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Backend Server</span>
-              <div className="flex items-center space-x-1.5">
-                <span className={`w-2 h-2 rounded-full ${isHealthOk ? 'bg-emerald-500 animate-ping' : 'bg-rose-500'}`}></span>
-                <span className={isHealthOk ? 'text-emerald-600 font-bold' : 'text-rose-600 font-bold'}>
-                  {isHealthOk ? 'Online' : 'Connecting'}
-                </span>
-              </div>
-            </div>
-          </div>
+
 
         </div>
 
