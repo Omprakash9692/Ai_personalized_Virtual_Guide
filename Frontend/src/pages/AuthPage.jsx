@@ -15,6 +15,7 @@ export default function AuthPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   const googleBtnRef = useRef(null);
+  const googleInitializedRef = useRef(false);
 
   const handleGoogleCallback = useCallback(async (response) => {
     if (response.credential) {
@@ -28,16 +29,19 @@ export default function AuthPage() {
     // Wait for the Google Identity Services script to load
     const initializeGoogle = () => {
       if (window.google && window.google.accounts) {
-        window.google.accounts.id.initialize({
-          client_id: GOOGLE_CLIENT_ID,
-          callback: handleGoogleCallback,
-        });
+        if (!googleInitializedRef.current) {
+          window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleCallback,
+          });
+          googleInitializedRef.current = true;
+        }
 
         if (googleBtnRef.current) {
           window.google.accounts.id.renderButton(googleBtnRef.current, {
             theme: 'outline',
             size: 'large',
-            width: googleBtnRef.current.offsetWidth,
+            width: googleBtnRef.current.offsetWidth || 320,
             text: 'continue_with',
             shape: 'pill',
             logo_alignment: 'center',

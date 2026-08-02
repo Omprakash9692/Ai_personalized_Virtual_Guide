@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { User, Save, ShieldCheck, Sparkles, GraduationCap, BookOpen, Key, Mail, CheckCircle2 } from 'lucide-react';
+import { User, Save, ShieldCheck, Sparkles, GraduationCap, BookOpen, Key, Mail, CheckCircle2, LogOut } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 
 export default function ProfilePage() {
-  const { userId, setUserId, profile, saveProfile, loadingProfile, language, setLanguage, showToast } = useUser();
+  const { userId, setUserId, profile, saveProfile, loadingProfile, language, setLanguage, showToast, logout } = useUser();
 
   const [formData, setFormData] = useState({
     name: '',
@@ -278,6 +278,22 @@ export default function ProfilePage() {
         </button>
 
       </form>
+
+      {/* Account Session & Logout Action */}
+      <div className="bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4 transition-colors duration-300">
+        <div>
+          <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">Account Session</h4>
+          <p className="text-xs text-slate-500 dark:text-slate-400">Sign out of your active student session on this device.</p>
+        </div>
+        <button
+          type="button"
+          onClick={logout}
+          className="w-full sm:w-auto px-5 py-2.5 rounded-2xl bg-rose-50 dark:bg-rose-950/40 hover:bg-rose-100 dark:hover:bg-rose-900/60 border border-rose-200 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 font-bold text-xs transition-colors flex items-center justify-center space-x-2 shadow-sm"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Log Out</span>
+        </button>
+      </div>
 
     </div>
   );

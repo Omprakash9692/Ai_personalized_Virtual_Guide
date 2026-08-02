@@ -24,12 +24,13 @@ apiClient.interceptors.request.use(
   }
 );
 
-// Interceptor to handle 401 (expired/invalid token) — auto logout
+// Interceptor to handle 401 (expired/invalid token) — auto logout for protected routes
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response && error.response.status === 401) {
-      // Clear stale auth data and reload to force re-login
+    const isAuthRoute = error.config && error.config.url && error.config.url.includes('/api/auth/');
+    if (error.response && error.response.status === 401 && !isAuthRoute) {
+      // Clear stale auth data and reload to force re-login for protected endpoints
       localStorage.removeItem('vg_token');
       localStorage.removeItem('vg_userId');
       window.location.reload();

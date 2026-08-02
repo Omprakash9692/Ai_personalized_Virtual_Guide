@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { MessageSquare, FileText, Mic, User, Sparkles, ShieldCheck, Menu, X, Layers, Activity, Zap, Award, LogOut, Moon, Sun, LayoutDashboard } from 'lucide-react';
+import { MessageSquare, FileText, Mic, User, Sparkles, ShieldCheck, Menu, X, Layers, Activity, Zap, Award, Moon, Sun, LayoutDashboard, LogOut } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
 
@@ -185,7 +185,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             </div>
           </div>
 
-          {/* Backend Connection Badge & Logout */}
+          {/* Backend Connection Badge & Log Out */}
           <div className="flex flex-col space-y-2">
             <div className="flex items-center justify-between px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-[11px]">
               <span className="text-slate-500 dark:text-slate-400 font-medium">Backend Server</span>
@@ -196,10 +196,10 @@ export default function Sidebar({ activeTab, setActiveTab }) {
                 </span>
               </div>
             </div>
-            
+
             <button 
               onClick={logout}
-              className="flex items-center justify-center space-x-2 w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900/50 hover:bg-rose-50 dark:hover:bg-rose-950/30 border border-slate-200 dark:border-slate-800 hover:border-rose-200 dark:hover:border-rose-800/50 text-slate-600 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 text-xs font-bold transition-colors"
+              className="flex items-center justify-center space-x-2 w-full px-3 py-2.5 rounded-xl bg-rose-50/80 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/50 border border-rose-200/80 dark:border-rose-800/60 text-rose-600 dark:text-rose-400 text-xs font-bold transition-all shadow-sm active:scale-[0.98] cursor-pointer"
             >
               <LogOut className="w-4 h-4" />
               <span>Log Out</span>
