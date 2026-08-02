@@ -6,7 +6,7 @@ const ai = new GoogleGenAI({ apiKey: apiKey || '' });
 /**
  * Generates lightweight normalized vector embedding as fallback if API is unavailable/rate-limited.
  */
-function generateFallbackEmbedding(text, dimensions = 384) {
+function generateFallbackEmbedding(text, dimensions = 768) {
   const embedding = new Array(dimensions).fill(0);
   const clean = text.toLowerCase();
   for (let i = 0; i < clean.length; i++) {

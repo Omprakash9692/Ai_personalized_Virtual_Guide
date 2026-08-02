@@ -77,7 +77,7 @@ async function saveMessagePair(userId, userMessage, aiResponse, sessionId = 'def
           $setOnInsert: { sessionId: sessionId },
           $push: { messages: { $each: [userTurn, modelTurn] } },
         },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: 'after' }
       ).exec();
     } else {
       const key = String(userId);

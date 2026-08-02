@@ -65,7 +65,7 @@ async function upsertUserProfile(userId, profileData = {}) {
       const updated = await User.findOneAndUpdate(
         { userId: String(userId) },
         { $set: payload },
-        { upsert: true, new: true }
+        { upsert: true, returnDocument: 'after' }
       ).exec();
       return updated.toObject();
     }
