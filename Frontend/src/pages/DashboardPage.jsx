@@ -4,7 +4,7 @@ import {
   Search, Bell, Moon, Sun, Brain, Sparkles, Zap, Award, FileText,
   MessageSquare, Mic, BookOpen, Clock, CheckCircle2, TrendingUp,
   ArrowRight, Flame, ChevronRight, CheckSquare, Square, Layers,
-  Compass, BarChart3, User, Sparkle
+  Compass, BarChart3, User, Sparkle, Plus, Trash2
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useTheme } from '../context/ThemeContext';
@@ -19,11 +19,14 @@ export default function DashboardPage({ setActiveTab }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [greeting, setGreeting] = useState('Good Day');
 
+  const [newGoalText, setNewGoalText] = useState('');
+
   // Interactive Daily Goals
   const [dailyGoals, setDailyGoals] = useState(() => {
     const saved = localStorage.getItem('dailyGoals');
+    const savedTopic = localStorage.getItem('weakestTopic') || 'Deadlocks';
     return saved ? JSON.parse(saved) : [
-      { id: 1, text: 'Review Operating Systems & Deadlocks concept', completed: true },
+      { id: 1, text: `Review Operating Systems & ${savedTopic} concept`, completed: true },
       { id: 2, text: 'Complete 1 Mock Viva session with AI Examiner', completed: false },
       { id: 3, text: 'Upload & index textbook PDF in RAG memory', completed: false },
     ];
@@ -35,6 +38,23 @@ export default function DashboardPage({ setActiveTab }) {
 
   const toggleGoal = (id) => {
     setDailyGoals(prev => prev.map(g => g.id === id ? { ...g, completed: !g.completed } : g));
+  };
+
+  const handleAddGoal = (e) => {
+    e.preventDefault();
+    if (!newGoalText.trim()) return;
+    const newGoal = {
+      id: Date.now(),
+      text: newGoalText.trim(),
+      completed: false,
+    };
+    setDailyGoals(prev => [...prev, newGoal]);
+    setNewGoalText('');
+  };
+
+  const handleDeleteGoal = (id, e) => {
+    e.stopPropagation();
+    setDailyGoals(prev => prev.filter(g => g.id !== id));
   };
 
   useEffect(() => {
@@ -187,86 +207,7 @@ export default function DashboardPage({ setActiveTab }) {
         </div>
       </motion.div>
 
-      {/* 3. Performance Metrics Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-        
-        {/* Metric 1 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.1 }}
-          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800/70 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2.5 rounded-2xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
-              <Clock className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-              +14% this week
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-slate-100">16.5 Hrs</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Study Time Logged</div>
-        </motion.div>
 
-        {/* Metric 2 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.15 }}
-          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800/70 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2.5 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 group-hover:scale-110 transition-transform">
-              <Award className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400">
-              Grade A
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-slate-100">88%</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">Avg Mock Viva Score</div>
-        </motion.div>
-
-        {/* Metric 3 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.2 }}
-          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800/70 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2.5 rounded-2xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 group-hover:scale-110 transition-transform">
-              <FileText className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400">
-              Vector Live
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-slate-100">5 PDFs</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">RAG Documents Indexed</div>
-        </motion.div>
-
-        {/* Metric 4 */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, delay: 0.25 }}
-          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800/70 rounded-3xl p-5 shadow-sm hover:shadow-md transition-all group"
-        >
-          <div className="flex items-center justify-between mb-3">
-            <div className="p-2.5 rounded-2xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 group-hover:scale-110 transition-transform">
-              <TrendingUp className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400">
-              Level 4
-            </span>
-          </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-slate-100">Scholar</div>
-          <div className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">AI Learning Tier</div>
-        </motion.div>
-
-      </div>
 
       {/* 4. Aether AI Insights & Focus Area */}
       <motion.div
@@ -411,10 +352,10 @@ export default function DashboardPage({ setActiveTab }) {
         </div>
       </div>
 
-      {/* 6. Two-Column Layout: Daily Goals & Recent Activity */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      {/* 6. Daily Goals Section */}
+      <div>
         
-        {/* Column 1: Daily Study Targets */}
+        {/* Daily Study Targets */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
@@ -452,7 +393,7 @@ export default function DashboardPage({ setActiveTab }) {
                 <div
                   key={goal.id}
                   onClick={() => toggleGoal(goal.id)}
-                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center space-x-3 ${
+                  className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex items-center space-x-3 group ${
                     goal.completed
                       ? 'bg-slate-50 dark:bg-slate-950/50 border-slate-200/80 dark:border-slate-800/80 text-slate-400 dark:text-slate-500 line-through'
                       : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-blue-300 dark:hover:border-blue-700 shadow-sm'
@@ -462,97 +403,43 @@ export default function DashboardPage({ setActiveTab }) {
                     {goal.completed ? <CheckSquare className="w-5 h-5" /> : <Square className="w-5 h-5" />}
                   </div>
                   <span className="text-xs font-semibold flex-1">{goal.text}</span>
+                  <button
+                    type="button"
+                    onClick={(e) => handleDeleteGoal(goal.id, e)}
+                    className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-500 transition-all rounded-lg"
+                    title="Delete Goal"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
                 </div>
               ))}
             </div>
+
+            {/* Add Custom Goal Input */}
+            <form onSubmit={handleAddGoal} className="mt-4 flex items-center space-x-2">
+              <input
+                type="text"
+                value={newGoalText}
+                onChange={(e) => setNewGoalText(e.target.value)}
+                placeholder="Add a new target..."
+                className="flex-1 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-xl px-3.5 py-2 text-xs text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-blue-500/50 placeholder-slate-400 dark:placeholder-slate-600"
+              />
+              <button
+                type="submit"
+                disabled={!newGoalText.trim()}
+                className="p-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white disabled:opacity-40 transition-colors shadow-sm cursor-pointer"
+                title="Add Target"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </form>
           </div>
 
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/60 text-center">
+          <div className="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 text-center">
             <p className="text-[11px] text-slate-400 font-medium">
-              💡 Tip: Click any target above to toggle completion!
+              💡 Tip: Click any target above to toggle completion, or add your custom goals!
             </p>
           </div>
-        </motion.div>
-
-        {/* Column 2: Recent Activity Timeline */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.4 }}
-          className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border border-slate-200/70 dark:border-slate-800/70 rounded-3xl p-6 shadow-sm flex flex-col justify-between"
-        >
-          <div>
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-base font-black text-slate-900 dark:text-slate-100 flex items-center space-x-2">
-                <BarChart3 className="w-5 h-5 text-indigo-600 dark:text-indigo-400" />
-                <span>Recent Learning Log</span>
-              </h3>
-              <span className="text-xs text-slate-400 font-medium">Latest sessions</span>
-            </div>
-
-            <div className="space-y-4">
-              
-              {/* Activity Item 1 */}
-              <div className="flex items-start space-x-3.5">
-                <div className="p-2 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5">
-                  <Award className="w-4 h-4" />
-                </div>
-                <div className="min-w-0 flex-1 border-b border-slate-100 dark:border-slate-800/60 pb-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">Mock Viva Completed</span>
-                    <span className="text-[10px] text-slate-400">Today, 2:30 PM</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Operating Systems • Score: <strong className="text-emerald-600 dark:text-emerald-400">92/100</strong>
-                  </p>
-                </div>
-              </div>
-
-              {/* Activity Item 2 */}
-              <div className="flex items-start space-x-3.5">
-                <div className="p-2 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5">
-                  <Zap className="w-4 h-4" />
-                </div>
-                <div className="min-w-0 flex-1 border-b border-slate-100 dark:border-slate-800/60 pb-3">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">Study Kit Generated</span>
-                    <span className="text-[10px] text-slate-400">Yesterday</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    Mindmap & PYQs generated for <strong className="text-slate-700 dark:text-slate-300">Deadlocks & Process Sync</strong>
-                  </p>
-                </div>
-              </div>
-
-              {/* Activity Item 3 */}
-              <div className="flex items-start space-x-3.5">
-                <div className="p-2 rounded-xl bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5">
-                  <FileText className="w-4 h-4" />
-                </div>
-                <div className="min-w-0 flex-1 pb-1">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-800 dark:text-slate-200">PDF Guide Indexed</span>
-                    <span className="text-[10px] text-slate-400">3 days ago</span>
-                  </div>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
-                    <strong className="text-slate-700 dark:text-slate-300">OS_Concepts_Chapter4.pdf</strong> loaded into RAG vector database
-                  </p>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <div className="mt-6 pt-4 border-t border-slate-100 dark:border-slate-800/60 text-center">
-            <button 
-              onClick={() => setActiveTab('viva')}
-              className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors inline-flex items-center space-x-1"
-            >
-              <span>View detailed analytics in Viva Simulator</span>
-              <ChevronRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
         </motion.div>
 
       </div>
