@@ -35,10 +35,9 @@ async function handleChat(req, res) {
     // 1. Fetch user profile from database for AI Personalization
     const userProfile = await getUserProfile(userId);
 
-    // 2. Resolve preferred language (Explicit req.body.language > User Profile > Auto-detect)
-    const targetLanguage = language || userProfile?.preferredLanguage || null;
+    // 2. Resolve target language (Automatically matches the user's message language)
     const { instruction: langInstruction, effectiveLanguage } = getLanguageInstruction(
-      targetLanguage,
+      null, // Force auto-detection matching user's input prompt language
       message.trim()
     );
 

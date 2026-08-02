@@ -31,7 +31,7 @@ function normalizeLanguage(inputLang) {
 }
 
 /**
- * Detects language from message text based on Unicode script analysis.
+ * Detects language from message text based on Script Analysis & Key Phrases.
  * 
  * @param {string} text - User message text
  * @returns {string} Language code ('hi', 'or', or 'en')
@@ -51,44 +51,55 @@ function detectLanguage(text) {
     return 'or';
   }
 
-  // Default to English for Latin/other scripts
+  // Check Roman script Hindi / Hinglish key patterns
+  const lower = text.toLowerCase();
+  const hindiKeywords = ['kya', 'hai', 'kaise', 'batao', 'mujhe', 'namaste', 'samjhao', 'kare', 'hoga', 'dhanyawad', 'shukriya', 'haan', 'nahi', 'padhna'];
+  if (hindiKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lower))) {
+    return 'hi';
+  }
+
+  // Check Roman script Odia key patterns
+  const odiaKeywords = ['kemiti', 'achhanti', 'namaskar', 'kahile', 'bhai', 'aau', 'tame', 'kan', 'mu', 'jane'];
+  if (odiaKeywords.some(kw => new RegExp(`\\b${kw}\\b`, 'i').test(lower))) {
+    return 'or';
+  }
+
   return 'en';
 }
 
 /**
  * Generates system prompt instruction for the target language.
+ * Automatically adapts to the user's message language.
  * 
- * @param {string|null} targetLang - Explicit target language code ('en', 'hi', 'or')
+ * @param {string|null} targetLang - Optional explicit target language code ('en', 'hi', 'or')
  * @param {string} userMessage - User query text for auto-detection fallback
  * @returns {{ instruction: string, effectiveLanguage: string }}
  */
 function getLanguageInstruction(targetLang, userMessage = '') {
+  const detectedLang = detectLanguage(userMessage);
+  // If targetLang is explicitly provided AND NOT 'auto', use targetLang; otherwise fallback to detected language from user input
   const normalized = normalizeLanguage(targetLang);
-  const effectiveLanguage = normalized || detectLanguage(userMessage);
+  const effectiveLanguage = (normalized && targetLang !== 'auto') ? normalized : detectedLang;
 
-  let instruction = '';
+  let instruction = `CRITICAL MULTILINGUAL DIRECTIVE: Automatically detect the exact language, script, and dialect of the user's input message. You MUST answer strictly in the EXACT SAME language and script that the user used.
+- If the user writes/speaks in Hindi (हिंदी or Hinglish), respond in fluent Hindi.
+- If the user writes/speaks in Odia (ଓଡ଼ିଆ or Odia in English script), respond in fluent Odia.
+- If the user writes/speaks in English, respond in clear English.
+- If the user uses any other language, match their language naturally.`;
 
   switch (effectiveLanguage) {
     case 'hi':
-      instruction =
-        'LANGUAGE INSTRUCTION: You MUST respond strictly in fluent Hindi (हिंदी) using Devanagari script.';
+      instruction += '\nPrimary Target Output: Hindi (हिंदी / Hinglish).';
       break;
 
     case 'or':
-      instruction =
-        'LANGUAGE INSTRUCTION: You MUST respond strictly in fluent Odia (ଓଡ଼ିଆ) using Odia script.';
+      instruction += '\nPrimary Target Output: Odia (ଓଡ଼ିଆ).';
       break;
 
     case 'en':
     default:
-      instruction =
-        'LANGUAGE INSTRUCTION: You MUST respond strictly in clear, natural English.';
+      instruction += '\nPrimary Target Output: English.';
       break;
-  }
-
-  if (!normalized) {
-    instruction +=
-      ' (Auto-detected user message language. Match the language of the user prompt naturally).';
   }
 
   return {

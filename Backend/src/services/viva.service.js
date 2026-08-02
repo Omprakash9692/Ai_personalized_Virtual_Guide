@@ -9,17 +9,37 @@ const { generateReply } = require('./groq');
  * @param {Array} [params.previousTurns=[]] - Conversation context of previous questions/answers
  * @returns {Promise<Object>} Object containing { question, questionId, topic }
  */
-async function generateVivaQuestion({ jobRole = 'Software Engineer', round = 'Technical Round', previousTurns = [] }) {
+async function generateVivaQuestion({ jobRole = 'Software Engineer', round = 'Technical Round', difficulty = 'Easy', previousTurns = [] }) {
   let roundInstruction = '';
+  const targetDifficulty = (difficulty && typeof difficulty === 'string') ? difficulty : 'Easy';
+
+  let difficultyRule = '';
+  if (targetDifficulty.toLowerCase() === 'easy') {
+    difficultyRule = `
+CRITICAL DIFFICULTY RULE: The candidate selected EASY level.
+- You MUST ask a SHORT, 1-LINE basic conceptual question.
+- Do NOT make it complex or multi-part.
+- Example Easy Question: "What is a closure in JavaScript?" or "What does HTML stand for?" or "What is a primary key in SQL?"
+- Strictly 1 single sentence only.`;
+  } else if (targetDifficulty.toLowerCase() === 'hard') {
+    difficultyRule = `
+CRITICAL DIFFICULTY RULE: The candidate selected HARD level.
+- Ask an ADVANCED, deep conceptual, edge-case, or system design interview question.
+- Require architectural trade-offs or complex problem-solving.`;
+  } else {
+    difficultyRule = `
+CRITICAL DIFFICULTY RULE: The candidate selected MEDIUM level.
+- Ask a standard, practical interview question requiring a 2-3 sentence explanation.`;
+  }
 
   if (round === "Aptitude & Reasoning") {
-  roundInstruction = `
+    roundInstruction = `
 You are an interviewer conducting an Aptitude & Reasoning round.
 
 Rules:
 - Ask ONLY ONE question at a time.
-- Difficulty: Easy to Medium.
-- Keep the question short (1-3 lines).
+- Difficulty: ${targetDifficulty}.
+${difficultyRule}
 - Focus on aptitude topics such as:
   • Quantitative Aptitude
   • Logical Reasoning
@@ -37,13 +57,14 @@ Rules:
 - Do NOT explain the answer.
 - Wait for the candidate's response before asking the next question.
 `;
-} else if (round === "HR Interview") {
-  roundInstruction = `
+  } else if (round === "HR Interview") {
+    roundInstruction = `
 You are a Senior HR Manager interviewing a candidate for the role of ${jobRole}.
 
 Rules:
 - Ask ONLY ONE HR question at a time.
-- Keep the question short (1-2 lines).
+- Difficulty: ${targetDifficulty}.
+${difficultyRule}
 - Focus on:
   • Self Introduction
   • Strengths & Weaknesses
@@ -61,44 +82,33 @@ Rules:
 - Do NOT ask technical questions.
 - Wait for the candidate's response before asking the next question.
 `;
-} else {
-  roundInstruction = `
+  } else {
+    roundInstruction = `
 You are a Technical Interviewer interviewing a candidate for the role of ${jobRole}.
 
 Rules:
 - Ask ONLY ONE technical question at a time.
-- Difficulty: Easy to Medium.
-- Questions should require a short answer (1-2 lines) or a brief explanation.
-- Focus on interview basics rather than deep theory.
-- Prefer practical questions commonly asked in interviews.
-- Avoid long conceptual discussions, system design, or very difficult problems.
-- Examples:
-  • What is a REST API?
-  • Difference between let and var?
-  • What is JWT?
-  • What is middleware in Express?
-  • What is MongoDB?
-  • What is React state?
-  • What is closure in JavaScript?
-  • What is async/await?
-  • Difference between SQL and NoSQL?
+- Difficulty: ${targetDifficulty}.
+${difficultyRule}
+- Focus on interview basics for Easy level, and practical depth for Medium/Hard.
 - Ask questions relevant to the role: ${jobRole}.
 - Wait for the candidate's response before asking the next question.
 `;
-}
+  }
 
   const systemPrompt = `${roundInstruction}
 You are conducting a formal 1-on-1 Mock Interview.
 
 CRITICAL INSTRUCTIONS:
-1. Ask ONE clear, challenging, and realistic interview question.
-2. Ensure the question is unique and unexpected. Avoid generic or overly common questions unless specifically testing foundations.
-3. Do NOT provide the answer or additional conversational filler.
-4. Output strictly JSON format:
+1. Ask ONE clear interview question matching the requested difficulty level (${targetDifficulty}).
+2. If difficulty is EASY, the question MUST be a short 1-line basic question.
+3. Ensure the question is unique and unexpected. Avoid repeating questions.
+4. Do NOT provide the answer or additional conversational filler.
+5. Output strictly JSON format:
 {
   "question": "Your exact interview question text here",
-  "topic": "Specific sub-topic name (e.g. System Design / Conflict Resolution / Probability)",
-  "difficulty": "Easy" | "Medium" | "Hard"
+  "topic": "Specific sub-topic name",
+  "difficulty": "${targetDifficulty}"
 }
 `;
 
@@ -106,7 +116,7 @@ CRITICAL INSTRUCTIONS:
     ? `Avoid repeating these previous questions: ${previousTurns.map(t => t.question).join('; ')}`
     : `To ensure variety, randomly pick a sub-topic or specific scenario related to the role. (Randomization Seed: ${Math.random()})`;
 
-  const userMessage = `Ask a high-yield interview question for the role of "${jobRole}" in the "${round}". ${previousSummary}`;
+  const userMessage = `Ask a ${targetDifficulty} level interview question for the role of "${jobRole}" in the "${round}". ${previousSummary}`;
 
   try {
     const rawReply = await generateReply(userMessage, [], { systemInstruction: systemPrompt });

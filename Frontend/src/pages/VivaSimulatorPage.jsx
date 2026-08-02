@@ -18,7 +18,9 @@ import {
   MessageSquare,
   Briefcase,
   Layers,
-  Users
+  Users,
+  Zap,
+  RotateCcw
 } from 'lucide-react';
 import { useUser } from '../context/UserContext';
 import { useSpeechRecognition } from '../hooks/useSpeechRecognition';
@@ -70,6 +72,7 @@ export default function VivaSimulatorPage() {
   // Session settings
   const [jobRoleInput, setJobRoleInput] = useState('Software Engineer');
   const [selectedRound, setSelectedRound] = useState('Technical Round');
+  const [selectedDifficulty, setSelectedDifficulty] = useState('Easy');
   const [sessionActive, setSessionActive] = useState(false);
 
   // Interview state
@@ -134,6 +137,7 @@ export default function VivaSimulatorPage() {
       const response = await getVivaQuestion({
         jobRole: jobRoleInput,
         round: selectedRound,
+        difficulty: selectedDifficulty,
         previousTurns: history,
       });
 
@@ -157,7 +161,25 @@ export default function VivaSimulatorPage() {
     
     const fallbackSpeak = () => {
       if (typeof window !== 'undefined' && window.speechSynthesis) {
+        window.speechSynthesis.cancel(); // Reset any active audio
         const utterance = new SpeechSynthesisUtterance(text);
+        const voices = window.speechSynthesis.getVoices();
+        
+        // Select female voice for reading question
+        const femaleVoice = voices.find(v => 
+          v.name.includes('Female') || 
+          v.name.includes('Zira') || 
+          v.name.includes('Google UK English Female') || 
+          v.name.includes('Google US English Female') || 
+          v.name.includes('Samantha') || 
+          v.name.includes('Victoria') || 
+          v.name.includes('Heera') || 
+          v.name.includes('Sangeeta')
+        );
+        if (femaleVoice) {
+          utterance.voice = femaleVoice;
+        }
+        utterance.pitch = 1.1; // Clear natural female voice pitch
         utterance.onend = () => setIsPlayingAudio(false);
         utterance.onerror = () => setIsPlayingAudio(false);
         window.speechSynthesis.speak(utterance);
@@ -170,6 +192,7 @@ export default function VivaSimulatorPage() {
       const res = await synthesizeVoice({
         text: text,
         language: 'en',
+        speaker: 'anushka', // Sarvam AI Female Voice Speaker
       });
       if (res && res.audioContent) {
         const audio = new Audio(`data:audio/mp3;base64,${res.audioContent}`);
@@ -363,6 +386,46 @@ export default function VivaSimulatorPage() {
             </div>
           </div>
 
+          {/* Difficulty Level Selection */}
+          <div>
+            <h3 className="text-sm font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 mb-4 flex items-center space-x-2">
+              <Zap className="w-4 h-4" />
+              <span>Step 3: Select Question Difficulty Level</span>
+            </h3>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {[
+                { id: 'Easy', label: 'Easy (1-Line Basics)', desc: 'Short 1-line conceptual question', badgeBg: 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300' },
+                { id: 'Medium', label: 'Medium (Standard)', desc: 'Standard practical interview question', badgeBg: 'bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-300' },
+                { id: 'Hard', label: 'Hard (Advanced)', desc: 'Challenging system design / edge-case', badgeBg: 'bg-rose-100 dark:bg-rose-900/40 text-rose-700 dark:text-rose-300' },
+              ].map((lvl) => {
+                const isSelected = selectedDifficulty === lvl.id;
+                return (
+                  <div
+                    key={lvl.id}
+                    onClick={() => setSelectedDifficulty(lvl.id)}
+                    className={`cursor-pointer rounded-2xl p-4 border transition-all space-y-2 relative ${
+                      isSelected
+                        ? 'bg-blue-50 dark:bg-blue-900/30 border-blue-500 dark:border-blue-500 shadow-md ring-2 ring-blue-500/50'
+                        : 'bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 hover:border-blue-300 dark:hover:border-blue-700'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{lvl.label}</span>
+                      {isSelected && <CheckCircle2 className="w-4 h-4 text-blue-600 dark:text-blue-400" />}
+                    </div>
+                    <span className={`inline-block text-[10px] font-extrabold px-2 py-0.5 rounded-full ${lvl.badgeBg}`}>
+                      {lvl.id} Level
+                    </span>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400 leading-relaxed">
+                      {lvl.desc}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Action Button */}
           <div className="pt-4 flex justify-center">
             <button
@@ -393,7 +456,12 @@ export default function VivaSimulatorPage() {
                     <activeRoundObj.icon className="w-5 h-5 text-white" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{activeRoundObj.name}</h3>
+                    <div className="flex items-center space-x-2">
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{activeRoundObj.name}</h3>
+                      <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 border border-blue-200 dark:border-blue-800">
+                        {selectedDifficulty}
+                      </span>
+                    </div>
                     <p className="text-[11px] text-slate-500 dark:text-slate-400">
                       Role: {jobRoleInput}
                     </p>
@@ -413,16 +481,17 @@ export default function VivaSimulatorPage() {
                 <div className="flex items-center justify-between">
                   <span className="text-[11px] font-extrabold uppercase tracking-wider text-blue-600 dark:text-blue-400 flex items-center space-x-1.5">
                     <MessageSquare className="w-3.5 h-3.5" />
-                    <span>Interviewer Question</span>
+                    <span>Interviewer Question ({selectedDifficulty})</span>
                   </span>
 
                   <button
-                    onClick={handleSpeakQuestion}
-                    disabled={isPlayingAudio || loadingQuestion}
-                    className="flex items-center space-x-1.5 px-3 py-1 bg-slate-100 dark:bg-slate-900 hover:bg-slate-200 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs rounded-lg transition-all disabled:opacity-50"
+                    onClick={() => handleSpeakQuestion(currentQuestion?.question)}
+                    disabled={isPlayingAudio || loadingQuestion || !currentQuestion?.question}
+                    className="flex items-center space-x-1.5 px-3 py-1.5 bg-blue-50 dark:bg-blue-900/30 hover:bg-blue-100 dark:hover:bg-blue-800/50 border border-blue-200 dark:border-blue-800 text-blue-700 dark:text-blue-300 text-xs font-extrabold rounded-xl transition-all disabled:opacity-50 shadow-sm"
+                    title="Play or Replay female voice reading the question"
                   >
-                    <Volume2 className={`w-3.5 h-3.5 ${isPlayingAudio ? 'text-amber-500 animate-pulse' : 'text-slate-500 dark:text-slate-400'}`} />
-                    <span>{isPlayingAudio ? 'Speaking...' : 'Listen Question'}</span>
+                    <Volume2 className={`w-3.5 h-3.5 ${isPlayingAudio ? 'text-amber-500 animate-bounce' : 'text-blue-600 dark:text-blue-400'}`} />
+                    <span>{isPlayingAudio ? 'Speaking...' : 'Play Again'}</span>
                   </button>
                 </div>
 

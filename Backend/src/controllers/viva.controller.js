@@ -5,11 +5,12 @@ const { generateVivaQuestion, evaluateVivaAnswer } = require('../services/viva.s
  */
 async function handleGetQuestion(req, res) {
   try {
-    const { jobRole, round, previousTurns } = req.body;
+    const { jobRole, round, difficulty, previousTurns } = req.body;
 
     const data = await generateVivaQuestion({
       jobRole,
       round,
+      difficulty,
       previousTurns,
     });
 
