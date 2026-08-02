@@ -16,7 +16,6 @@ export default function DashboardPage({ setActiveTab }) {
   // State Management
   const [weakestTopic, setWeakestTopic] = useState('Deadlocks');
   const [streak, setStreak] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
   const [greeting, setGreeting] = useState('Good Day');
 
   const [newGoalText, setNewGoalText] = useState('');
@@ -104,22 +103,17 @@ export default function DashboardPage({ setActiveTab }) {
     <div className="flex-1 space-y-8 max-w-6xl mx-auto pb-12 overflow-x-hidden">
       
       {/* 1. Header Navigation & Quick Actions */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl p-4 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
+      <div className="flex items-center justify-between gap-4 bg-white/70 dark:bg-slate-950/70 backdrop-blur-xl p-4 rounded-3xl border border-slate-200/80 dark:border-slate-800/80 shadow-sm">
         
-        {/* Search Bar */}
-        <div className="relative w-full sm:w-96">
-          <Search className="w-4 h-4 absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search study notes, PDFs, or ask AI..."
-            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500"
-          />
+        <div className="flex items-center space-x-2">
+          <div className="p-2 bg-blue-100 dark:bg-blue-900/30 rounded-xl">
+            <Sparkles className="w-4 h-4 text-blue-600 dark:text-blue-400" />
+          </div>
+          <span className="text-xs font-black tracking-tight text-slate-800 dark:text-slate-200">Aether AI Student Dashboard</span>
         </div>
 
         {/* Action Controls */}
-        <div className="flex items-center space-x-3 self-end sm:self-auto">
+        <div className="flex items-center space-x-3">
           <button 
             onClick={toggleTheme} 
             className="p-2.5 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors shadow-sm"
