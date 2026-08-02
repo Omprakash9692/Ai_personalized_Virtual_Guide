@@ -162,28 +162,7 @@ export default function Sidebar({ activeTab, setActiveTab }) {
             {profile && <ShieldCheck className="w-4 h-4 text-emerald-500 flex-shrink-0" />}
           </div>
 
-          {/* Language Selector */}
-          <div className="space-y-3">
-            <div className="grid grid-cols-3 gap-1 bg-slate-50 dark:bg-slate-900/50 p-1 rounded-xl border border-slate-200 dark:border-slate-800 text-xs">
-              {[
-                { code: 'en', label: 'English' },
-                { code: 'hi', label: 'हिंदी' },
-                { code: 'or', label: 'ଓଡ଼ିଆ' },
-              ].map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => setLanguage(l.code)}
-                  className={`py-1.5 rounded-lg text-xs font-bold transition-all text-center ${
-                    language === l.code
-                      ? 'bg-blue-600 text-white shadow-sm'
-                      : 'text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-200/50 dark:hover:bg-slate-800/50'
-                  }`}
-                >
-                  {l.label}
-                </button>
-              ))}
-            </div>
-          </div>
+
 
           {/* Backend Connection Badge */}
           <div className="flex flex-col space-y-2">
